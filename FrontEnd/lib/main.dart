@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(const AkilliKampusApp());
@@ -21,7 +22,7 @@ class AkilliKampusApp extends StatelessWidget {
   }
 }
 
-// Uygulama ilk açıldığında gelen giriş sayfası
+// --- GİRİŞ EKRANI ---
 class GirisEkrani extends StatelessWidget {
   const GirisEkrani({super.key});
 
@@ -83,7 +84,6 @@ class GirisEkrani extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
-                        // Giriş başarılı varsayıp ana sayfaya geçiyoruz
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AnaSayfa()));
                       },
                       child: const Text("SİSTEME GİRİŞ", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -91,7 +91,6 @@ class GirisEkrani extends StatelessWidget {
                     const SizedBox(height: 15),
                     TextButton(
                       onPressed: () {
-                        // Kayıt ekranına yönlendir
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const KayitEkrani()));
                       },
                       child: const Text("Hesabın yok mu? Kayıt Ol", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)),
@@ -107,7 +106,7 @@ class GirisEkrani extends StatelessWidget {
   }
 }
 
-// Yeni kullanıcı oluşturma sayfası
+// --- KAYIT EKRANI ---
 class KayitEkrani extends StatelessWidget {
   const KayitEkrani({super.key});
 
@@ -151,7 +150,7 @@ class KayitEkrani extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
-                        Navigator.pop(context); // Kayıt olunca geri dön
+                        Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Kayıt işlemi tamamlandı!")));
                       },
                       child: const Text("KAYDI TAMAMLA", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -166,7 +165,6 @@ class KayitEkrani extends StatelessWidget {
     );
   }
 
-  // Kayıt alanları için küçük bir yardımcı widget
   Widget _kayitFormAlanlari(String label, IconData icon, {bool sifreMi = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
@@ -183,15 +181,15 @@ class KayitEkrani extends StatelessWidget {
   }
 }
 
-// Gelen bildirimlerin listelendiği ana sayfa
+// --- ANA SAYFA ---
 class AnaSayfa extends StatelessWidget {
   const AnaSayfa({super.key});
 
-  // Buradaki dummy veriler veri tabanı (reports tablosu) mantığında hazırlandı
+  // GÜNCELLENEN LİSTE: Sokak Hayvanı Yardımı eklendi
   final List<Map<String, dynamic>> sikayetListesi = const [
-    {"id": 1, "baslik": "Asansör Arızası", "kategori": "Teknik", "durum": "Açık", "renk": Colors.red, "tarih": "24.12.2025", "konum": "Mühendislik Fakültesi"},
-    {"id": 2, "baslik": "Şüpheli Paket", "kategori": "Güvenlik", "durum": "İnceleniyor", "renk": Colors.orange, "tarih": "24.12.2025", "konum": "Kütüphane"},
-    {"id": 3, "baslik": "Sokak Hayvanı Yardımı", "kategori": "Çevre", "durum": "Çözüldü", "renk": Colors.green, "tarih": "23.12.2025", "konum": "Öğrenci Tesisi"},
+    {"id": 1, "baslik": "Asansör Arızası", "kategori": "Teknik", "durum": "Açık", "renk": Colors.red, "tarih": "25.12.2025", "konum": "Mühendislik Fakültesi"},
+    {"id": 2, "baslik": "Şüpheli Paket", "kategori": "Güvenlik", "durum": "İnceleniyor", "renk": Colors.orange, "tarih": "25.12.2025", "konum": "Kütüphane"},
+    {"id": 3, "baslik": "Sokak Hayvanı Yardımı", "kategori": "Çevre", "durum": "Çözüldü", "renk": Colors.green, "tarih": "24.12.2025", "konum": "Öğrenci Tesisi"},
   ];
 
   @override
@@ -217,7 +215,6 @@ class AnaSayfa extends StatelessWidget {
               ),
               title: Text(veri["baslik"], style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text("${veri["konum"]}\n${veri["tarih"]}"),
-              trailing: const Icon(Icons.bookmark_border, color: Colors.blueGrey),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => DetayEkrani(bildirim: veri)));
               },
@@ -240,7 +237,7 @@ class AnaSayfa extends StatelessWidget {
   }
 }
 
-// Raporların detaylarını gösteren sayfa
+// --- DETAY EKRANI ---
 class DetayEkrani extends StatefulWidget {
   final Map<String, dynamic> bildirim;
   const DetayEkrani({super.key, required this.bildirim});
@@ -274,35 +271,12 @@ class _DetayEkraniState extends State<DetayEkrani> {
             const SizedBox(height: 20),
             Text(widget.bildirim["baslik"], style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const Divider(height: 40),
-            const Text("Durum Güncelle (Yetkili)", style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 15),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              ActionChip(
-                  avatar: const Icon(Icons.search),
-                  label: const Text("İncele"),
-                  onPressed: () {
-                    setState(() => guncelDurum = "İncelemede");
-                  }
-              ),
-              ActionChip(
-                  avatar: const Icon(Icons.check),
-                  label: const Text("Çözüldü"),
-                  onPressed: () {
-                    setState(() => guncelDurum = "Çözüldü");
-                  }
-              ),
+              ActionChip(label: const Text("İncele"), onPressed: () => setState(() => guncelDurum = "İncelemede")),
+              ActionChip(label: const Text("Çözüldü"), onPressed: () => setState(() => guncelDurum = "Çözüldü")),
             ]),
             const Spacer(),
-            Container(
-              padding: const EdgeInsets.all(20),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: (widget.bildirim["renk"] as Color).withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: (widget.bildirim["renk"] as Color).withOpacity(0.2))
-              ),
-              child: Text("GÜNCEL DURUM: $guncelDurum", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: widget.bildirim["renk"])),
-            ),
+            Text("GÜNCEL DURUM: $guncelDurum", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: widget.bildirim["renk"])),
           ],
         ),
       ),
@@ -310,39 +284,51 @@ class _DetayEkraniState extends State<DetayEkrani> {
   }
 }
 
-// Harita ekranı simülasyonu
-class HaritaEkrani extends StatelessWidget {
+// --- HARİTA EKRANI (ATAUNİ MÜHENDİSLİK) ---
+class HaritaEkrani extends StatefulWidget {
   const HaritaEkrani({super.key});
+
+  @override
+  State<HaritaEkrani> createState() => _HaritaEkraniState();
+}
+
+class _HaritaEkraniState extends State<HaritaEkrani> {
+  static LatLng _atauniMuhendislik = const LatLng(39.9082, 41.2435);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Kampüs Haritası")),
-      body: Stack(
-        children: [
-          Container(color: const Color(0xFFF0F4F8)),
-          const Center(child: Opacity(opacity: 0.1, child: Icon(Icons.map_rounded, size: 300))),
-          _isaretciEkle(150, 120, Colors.red, "Arıza"),
-          _isaretciEkle(280, 220, Colors.orange, "Güvenlik"),
-        ],
+      appBar: AppBar(title: const Text("Atauni Kampüs Haritası")),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: _atauniMuhendislik,
+          zoom: 16.0,
+        ),
+        markers: {
+          Marker(
+            markerId: const MarkerId('muh'),
+            position: _atauniMuhendislik,
+            infoWindow: const InfoWindow(title: "Mühendislik Fakültesi", snippet: "Kampüs Destek Merkezi"),
+          ),
+          Marker(
+            markerId: const MarkerId('lib'),
+            position: const LatLng(39.9075, 41.2450),
+            infoWindow: const InfoWindow(title: "Merkez Kütüphane", snippet: "Aydınlatma Bildirimi"),
+          ),
+          // GÜNCELLEME: Sokak Hayvanı Marker eklendi
+          Marker(
+            markerId: const MarkerId('animal'),
+            position: const LatLng(39.9065, 41.2425),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+            infoWindow: const InfoWindow(title: "Sokak Hayvanı Yardımı", snippet: "Öğrenci Tesisi Yakını"),
+          ),
+        },
       ),
-    );
-  }
-
-  // Haritaya pin koymak için kullandığımız yardımcı yapı
-  Widget _isaretciEkle(double top, double left, Color renk, String etiket) {
-    return Positioned(
-        top: top,
-        left: left,
-        child: Column(children: [
-          Icon(Icons.location_on, color: renk, size: 30),
-          Text(etiket, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold))
-        ])
     );
   }
 }
 
-// Kullanıcı profil sayfası
+// --- PROFİL EKRANI ---
 class ProfilEkrani extends StatelessWidget {
   const ProfilEkrani({super.key});
 
@@ -354,25 +340,15 @@ class ProfilEkrani extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            const CircleAvatar(
-                radius: 55,
-                backgroundColor: Color(0xFF1E88E5),
-                child: Text("CC", style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold))
-            ),
+            const CircleAvatar(radius: 55, backgroundColor: Color(0xFF1E88E5), child: Text("CC", style: TextStyle(color: Colors.white, fontSize: 32))),
             const SizedBox(height: 30),
             _bilgiSatiri("Ad Soyad", "Çağla Candan"),
-            _bilgiSatiri("E-posta Hesabı", "cagla@kampus.edu.tr"),
-            _bilgiSatiri("Bağlı Olduğu Birim", "Bilgisayar Mühendisliği"),
+            _bilgiSatiri("E-posta", "cagla@atauni.edu.tr"),
+            _bilgiSatiri("Bölüm", "Bilgisayar Mühendisliği"),
             const Spacer(),
             OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 55),
-                  side: const BorderSide(color: Colors.red),
-                  foregroundColor: Colors.red
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const GirisEkrani()));
-              },
+              style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, 55), side: const BorderSide(color: Colors.red), foregroundColor: Colors.red),
+              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const GirisEkrani())),
               child: const Text("OTURUMU KAPAT"),
             ),
           ],
@@ -381,15 +357,11 @@ class ProfilEkrani extends StatelessWidget {
     );
   }
 
-  // Profildeki bilgi satırlarını tek tek yazmak yerine fonksiyonla yaptık
   Widget _bilgiSatiri(String baslik, String icerik) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(baslik, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-          Text(icerik, style: const TextStyle(fontSize: 17)),
-          const Divider()
-        ]
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(baslik, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+      Text(icerik, style: const TextStyle(fontSize: 17)),
+      const Divider()
+    ]);
   }
 }
