@@ -22,7 +22,7 @@ class AkilliKampusApp extends StatelessWidget {
   }
 }
 
-// --- GİRİŞ EKRANI ---
+// giriş ekranı tasarımı
 class GirisEkrani extends StatelessWidget {
   const GirisEkrani({super.key});
 
@@ -84,6 +84,7 @@ class GirisEkrani extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
+                        // giriş yapınca ana sayfaya atıyor
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AnaSayfa()));
                       },
                       child: const Text("SİSTEME GİRİŞ", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -106,7 +107,7 @@ class GirisEkrani extends StatelessWidget {
   }
 }
 
-// --- KAYIT EKRANI ---
+// yeni kullanıcı kayıt sayfası
 class KayitEkrani extends StatelessWidget {
   const KayitEkrani({super.key});
 
@@ -165,6 +166,7 @@ class KayitEkrani extends StatelessWidget {
     );
   }
 
+  // textfieldlar için ortak fonksiyon
   Widget _kayitFormAlanlari(String label, IconData icon, {bool sifreMi = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
@@ -181,11 +183,11 @@ class KayitEkrani extends StatelessWidget {
   }
 }
 
-// --- ANA SAYFA ---
+// ana ekran ve bildirim listesi
 class AnaSayfa extends StatelessWidget {
   const AnaSayfa({super.key});
 
-  // GÜNCELLENEN LİSTE: Sokak Hayvanı Yardımı eklendi
+  // buradaki veriler listede görünecek olanlar
   final List<Map<String, dynamic>> sikayetListesi = const [
     {"id": 1, "baslik": "Asansör Arızası", "kategori": "Teknik", "durum": "Açık", "renk": Colors.red, "tarih": "25.12.2025", "konum": "Mühendislik Fakültesi"},
     {"id": 2, "baslik": "Şüpheli Paket", "kategori": "Güvenlik", "durum": "İnceleniyor", "renk": Colors.orange, "tarih": "25.12.2025", "konum": "Kütüphane"},
@@ -216,6 +218,7 @@ class AnaSayfa extends StatelessWidget {
               title: Text(veri["baslik"], style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text("${veri["konum"]}\n${veri["tarih"]}"),
               onTap: () {
+                // karta basınca detay sayfasına gitsin
                 Navigator.push(context, MaterialPageRoute(builder: (context) => DetayEkrani(bildirim: veri)));
               },
             ),
@@ -224,6 +227,7 @@ class AnaSayfa extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
+          // menü geçişleri
           if (index == 1) Navigator.push(context, MaterialPageRoute(builder: (context) => const HaritaEkrani()));
           if (index == 2) Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilEkrani()));
         },
@@ -237,7 +241,7 @@ class AnaSayfa extends StatelessWidget {
   }
 }
 
-// --- DETAY EKRANI ---
+// raporların detaylarını gördüğümüz yer
 class DetayEkrani extends StatefulWidget {
   final Map<String, dynamic> bildirim;
   const DetayEkrani({super.key, required this.bildirim});
@@ -272,6 +276,7 @@ class _DetayEkraniState extends State<DetayEkrani> {
             Text(widget.bildirim["baslik"], style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const Divider(height: 40),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              // butonlara basınca durum değişsin diye
               ActionChip(label: const Text("İncele"), onPressed: () => setState(() => guncelDurum = "İncelemede")),
               ActionChip(label: const Text("Çözüldü"), onPressed: () => setState(() => guncelDurum = "Çözüldü")),
             ]),
@@ -284,7 +289,7 @@ class _DetayEkraniState extends State<DetayEkrani> {
   }
 }
 
-// --- HARİTA EKRANI (ATAUNİ MÜHENDİSLİK) ---
+// kampüs haritası sayfası
 class HaritaEkrani extends StatefulWidget {
   const HaritaEkrani({super.key});
 
@@ -293,6 +298,7 @@ class HaritaEkrani extends StatefulWidget {
 }
 
 class _HaritaEkraniState extends State<HaritaEkrani> {
+  // mühendislik fakültesi koordinatı
   static LatLng _atauniMuhendislik = const LatLng(39.9082, 41.2435);
 
   @override
@@ -315,7 +321,7 @@ class _HaritaEkraniState extends State<HaritaEkrani> {
             position: const LatLng(39.9075, 41.2450),
             infoWindow: const InfoWindow(title: "Merkez Kütüphane", snippet: "Aydınlatma Bildirimi"),
           ),
-          // GÜNCELLEME: Sokak Hayvanı Marker eklendi
+          // sokak hayvanları için eklediğim konum
           Marker(
             markerId: const MarkerId('animal'),
             position: const LatLng(39.9065, 41.2425),
@@ -328,7 +334,7 @@ class _HaritaEkraniState extends State<HaritaEkrani> {
   }
 }
 
-// --- PROFİL EKRANI ---
+// profil sayfası
 class ProfilEkrani extends StatelessWidget {
   const ProfilEkrani({super.key});
 
@@ -357,6 +363,7 @@ class ProfilEkrani extends StatelessWidget {
     );
   }
 
+  // alt alta bilgileri listelemek için kullandığım widget
   Widget _bilgiSatiri(String baslik, String icerik) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(baslik, style: const TextStyle(color: Colors.grey, fontSize: 12)),
