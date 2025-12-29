@@ -3,6 +3,7 @@ package com.mobil.kampusapp.exception;
 
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -17,7 +18,7 @@ public class GlobalExceptionHandler {//genel istisna yakalayıcı
         body.put("timestamp", Instant.now().toString());
         body.put("status", 403);
         body.put("code", "FORBIDDEN");
-        body.put("message", "You are not allowed to update hookup report status.");
+        body.put("message", "Bu işlemi gerçekleştirmek için yetkiniz yok.");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
@@ -27,7 +28,17 @@ public class GlobalExceptionHandler {//genel istisna yakalayıcı
         body.put("timestamp", Instant.now().toString());
         body.put("status", 400);
         body.put("code", "BAD_REQUEST");
-        body.put("message", ex.getMessage());
+        body.put("message", "Geçersiz argüman sağlandı: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", 401);
+        body.put("code", "UNAUTHORIZED");
+        body.put("message", "Kullanıcı adı veya şifre hatalı.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 }
