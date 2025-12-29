@@ -13,7 +13,7 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-const String backendApiUrl = 'https://career-exception-bracelet-compact.trycloudflare.com'; //burası cloudflare ipsi yazılacak veya kullanıma göre localhost
+const String backendApiUrl = 'https://flights-ratings-sustained-skirt.trycloudflare.com'; //burası cloudflare ipsi yazılacak veya kullanıma göre localhost
                                                                                             //veya 127.0.0.1 ile çalıştırılacak.
 
 final ApiService apiService = ApiService(backendApiUrl);
