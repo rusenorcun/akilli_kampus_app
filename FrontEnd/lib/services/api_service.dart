@@ -8,7 +8,7 @@ class ApiService {
 
   ApiService(this.baseUrl);
 
-  // Giriş sonrası alınacak token'ı ayarlamak için kullanılan metod
+  // Giriş sonrası alınacak token'ı ayarlamak bu methodu kullanıyoruz
   void setAuthToken(String? token) {
     _authToken = token;
   }
@@ -32,7 +32,7 @@ class ApiService {
     }
   }
 
-  // GET isteği gönderen genel metod
+  // GET isteği
   Future<dynamic> get(String endpoint) async {
     final response = await http.get(
       Uri.parse('$baseUrl$endpoint'),
@@ -50,7 +50,7 @@ class ApiService {
     }
   }
 
-  // PUT isteği gönderen genel metod (Rapor durumunu güncellemek için)
+  // PUT isteği  (Rapor durumunu güncellemek için)
   Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
     final response = await http.put(
       Uri.parse('$baseUrl$endpoint'),

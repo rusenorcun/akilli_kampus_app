@@ -13,7 +13,9 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-const String backendApiUrl = 'https://career-exception-bracelet-compact.trycloudflare.com';
+const String backendApiUrl = 'https://career-exception-bracelet-compact.trycloudflare.com'; //burası cloudflare ipsi yazılacak veya kullanıma göre localhost
+                                                                                            //veya 127.0.0.1 ile çalıştırılacak.
+
 final ApiService apiService = ApiService(backendApiUrl);
 
 void main() {
@@ -59,7 +61,7 @@ class _GirisEkraniState extends State<GirisEkrani> {
     setState(() => _isLoading = true);
 
     try {
-      final response = await apiService.post('/api/auth/login', {
+      final response = await apiService.post('/api/auth/login', {//login isteği atıyoruz.
         'email': _emailController.text,
         'password': _passwordController.text,
       });
@@ -77,7 +79,7 @@ class _GirisEkraniState extends State<GirisEkrani> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content:
-              Text('Giriş başarısız: ${e.toString().replaceAll("Exception: ", "")}')),
+              Text('Giriş başarısız: ${e.toString().replaceAll("Exception: ", "")}')),//hata almamız durumunda global exception controllerdan dönen hatayı alırırz
         );
       }
     } finally {
@@ -204,7 +206,7 @@ class _KayitEkraniState extends State<KayitEkrani> {
     FocusScope.of(context).unfocus();
     setState(() => _isLoading = true);
     try {
-      await apiService.post('/api/auth/register', {
+      await apiService.post('/api/auth/register', {//kayıt isteği atıyoruz.
         'fullName': _fullNameController.text,
         'email': _emailController.text,
         'department': _departmentController.text,
@@ -221,7 +223,7 @@ class _KayitEkraniState extends State<KayitEkrani> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
-                'Kayıt başarısız: ${e.toString().replaceAll("Exception: ", "")}')));
+                'Kayıt başarısız: ${e.toString().replaceAll("Exception: ", "")}')));//exception contrroler dönüşü
       }
     } finally {
       if (mounted) {
@@ -338,7 +340,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
   Future<List<dynamic>> _fetchReports() async {
     try {
-      return await apiService.get('/api/reports');
+      return await apiService.get('/api/reports');//reporta isteği atıyoruz.
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -405,7 +407,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
             if (snapshot.hasError ||
                 !snapshot.hasData ||
                 snapshot.data!.isEmpty) {
-              return const Center(child: Text("Gösterilecek rapor bulunamadı."));
+              return const Center(child: Text("Gösterilecek rapor bulunamadı."));//veritabanında rapor yoksa buraya giriyor.
             }
 
             final raporListesi = snapshot.data!;
@@ -665,15 +667,15 @@ class _DetayEkraniState extends State<DetayEkrani> {
   }
 
   Future<Map<String, dynamic>> _fetchReportDetails() async {
-    final response = await apiService.get('/api/reports/${widget.bildirimId}');
+    final response = await apiService.get('/api/reports/${widget.bildirimId}');//detay isteği atıyoruz. rapor oluşup veri tabanına işleniyor
     return response as Map<String, dynamic>;
   }
 
   Future<void> _updateStatus(String newStatus) async {
     try {
       await apiService.put(
-          '/api/reports/${widget.bildirimId}/status', {'status': newStatus.toUpperCase()});
-      if (mounted) {
+          '/api/reports/${widget.bildirimId}/status', {'status': newStatus.toUpperCase()});// oluşturulan raporların durum güncellemesi
+      if (mounted) {                                                                       // yalnızca admin permine sahip kişiler yapabiliyor.
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Durum güncellendi!"),
             backgroundColor: Colors.green));
@@ -818,7 +820,7 @@ class _ProfilEkraniState extends State<ProfilEkrani> {
   }
 
   Future<Map<String, dynamic>> _fetchUserProfile() async {
-    final response = await apiService.get('/api/users/me');
+    final response = await apiService.get('/api/users/me');//profil isteği atıyoruz.
     return response as Map<String, dynamic>;
   }
 
